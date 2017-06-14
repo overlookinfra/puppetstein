@@ -1,3 +1,7 @@
 Gemfile.lock
 Gemfile.local
 .bundle/
+*.swp
+junit/
+log/
+tmp/
