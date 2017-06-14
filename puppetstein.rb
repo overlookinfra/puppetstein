@@ -3,6 +3,7 @@
 require 'cri'
 require 'git'
 require 'yaml'
+require 'json'
 require_relative 'lib/host'
 require_relative 'lib/util/common_utils.rb'
 require_relative 'lib/util/platform_utils.rb'
@@ -84,7 +85,7 @@ command = Cri::Command.define do
     else
       pa_version = Hash.new
       pa_version[:fork] = 'puppetlabs'
-      pa_version[:sha] = 'nightly'
+      pa_version[:sha] = opts[:build] ? 'master' : 'nightly'
     end
 
     ENV['PA_SHA'] = pa_version[:sha]
@@ -161,7 +162,6 @@ command = Cri::Command.define do
     # build_mode: build a puppet_agent package with given component SHAs
     ###
     if build_mode
-      pa_version[:sha] = 'master' if pa_version[:sha] == 'nightly'
       clone_repo('puppet-agent', pa_version[:fork], pa_version[:sha], tmp) if !opts[:noop]
       create_host_config([agent, master], config)
 
