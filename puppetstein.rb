@@ -82,6 +82,8 @@ command = Cri::Command.define do
     ###
     if opts[:puppet_agent]
       pa_version = parse_project_version(opts.fetch(:puppet_agent))
+      # If a fork has been specified, trigger a rebuild
+      build_mode = true if pa_version[:fork]
     else
       pa_version = Hash.new
       pa_version[:fork] = 'puppetlabs'
@@ -160,8 +162,9 @@ command = Cri::Command.define do
 
     ###
     # build_mode: build a puppet_agent package with given component SHAs
+    # Used automatically if a Facter version is specified, since we can't hot-swap Facter
     ###
-    if build_mode
+    if build_mode || opts[:facter]
       clone_repo('puppet-agent', pa_version[:fork], pa_version[:sha], tmp) if !opts[:noop]
       create_host_config([agent, master], config)
 
@@ -222,10 +225,11 @@ command = Cri::Command.define do
       exit 0
     end
 
+    #
     ###
     # Patch mode: If no other mode was specifically requested, try to patch a component
     ###
-    patchable_projects = ['puppet', 'hiera', 'facter']
+    patchable_projects = ['puppet', 'hiera']
     patchable_projects.each do |p|
       if opts[:"#{p}"]
         if pr = /pr_(\d+)/.match(opts[:"#{p}"])
@@ -261,8 +265,6 @@ def parse_project_version(option)
   if keys.length == 2
     project_fork = keys[0]
     project_sha = keys[1]
-    # if a fork is specified, assume we need to do a build
-    build_mode = true
   else
     project_fork = 'puppetlabs'
     project_sha = keys[0]

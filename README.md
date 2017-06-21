@@ -11,7 +11,7 @@ Options:
 
   `--platform=<OS>` The VMpooler platform to use. Format: platform-version-arch, i.e 'centos-7-x86_64'
 
-  `--build` Option to force puppetstein to build a new puppet-agent package rather than retrieving a pre-existing one. This is set automatically if a fork and branch is specified for the `--puppet-agent` option.
+  `--build` Option to force puppetstein to build a new puppet-agent package rather than retrieving a pre-existing one. This is set automatically if a fork and branch is specified for the `--puppet-agent` option, or if a Facter version is specified (since we need to rebuild all the C++ in this case).
 
   `--package=<path/to/package>` Path to a puppet-agent package on the local system to install and use for testing. Conflicts with `--puppet-agent`.
 

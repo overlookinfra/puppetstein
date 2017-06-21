@@ -8,3 +8,6 @@ gem 'beaker'
 gem 'vanagon'
 gem 'rspec'
 gem 'minitest'
+
+gem 'pry'
+gem 'pry-nav'
