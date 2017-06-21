@@ -261,6 +261,8 @@ def parse_project_version(option)
   if keys.length == 2
     project_fork = keys[0]
     project_sha = keys[1]
+    # if a fork is specified, assume we need to do a build
+    build_mode = true
   else
     project_fork = 'puppetlabs'
     project_sha = keys[0]
