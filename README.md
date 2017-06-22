@@ -2,9 +2,9 @@
 
 A standalone tool to automate the building and composition of various versions of puppet-agent components for development and testing.
 
-This is super a work in progress, especially this README.
-
 ### Usage
+
+Note: this currently requires its gems to be `bundle installed` globally, so that the cloned acceptance tests have access to them.
 
 Options:
   `--puppet_agent=<[fork:]SHA>`  The base version of puppet-agent to use. If `fork` is ommitted, `puppetlabs` is used, and builds.puppetlabs.lan will be checked for a corresponding SHA. If `fork` is specified, a new package will be built. Omit this option to use the latest puppet-agent. Conflicts with `--package`.
