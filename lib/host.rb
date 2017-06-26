@@ -103,13 +103,17 @@ module Puppetstein
       platform_string.split('-')[2]
     end
 
-    # When building puppet-agent, debian based beaker_platform_strings use 'amd' instead of 'x86'
+    # When building puppet-agent, debian based beaker_platform_strings use 'amd' instead of 'x86',
+    # and Windows uses 'x64' and 'x86'.
     def get_vanagon_arch(platform_string)
+      pooler_arch = platform_string.split('-')[2]
       case platform_string.split('-')[0]
       when 'debian', 'ubuntu'
-        'amd64'
+        pooler_arch == 'x86_64' ? 'amd64' : pooler_arch
+      when 'win'
+        pooler_arch == 'x86_64' ? 'x64' : 'x86'
       else
-        platform_string.split('-')[2]
+        pooler_arch
       end
     end
 
@@ -118,6 +122,8 @@ module Puppetstein
       when 'osx'
         puts "osx-#{@version[0, 2]}.#{@version[2..-1]}-#{@vanagon_arch}"
         "osx-#{@version[0, 2]}.#{@version[2..-1]}-#{@vanagon_arch}"
+      when 'win'
+        "windows-#{@version}-#{@vanagon_arch}"
       else
         "#{@family}-#{@version}-#{@vanagon_arch}"
       end
