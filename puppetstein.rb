@@ -292,6 +292,9 @@ def build_puppet_agent(host, keyfile, tmp)
   cmd = "pushd #{tmp}/puppet-agent && bundle install && bundle exec build puppet-agent" +
         " #{host.vanagon_string} && popd"
   execute(cmd)
+  if $? != 0
+    raise "Puppet Agent build failed, aborting."
+  end
 end
 
 def build_facter
