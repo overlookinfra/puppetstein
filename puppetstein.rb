@@ -87,7 +87,7 @@ command = Cri::Command.define do
     else
       pa_version = Hash.new
       pa_version[:fork] = 'puppetlabs'
-      pa_version[:sha] = opts[:build] ? 'master' : 'nightly'
+      pa_version[:sha] = opts[:build] ? 'master' : `curl http://builds.puppetlabs.lan/passing-agent-SHAs/puppet-agent-master`
     end
 
     ENV['PA_SHA'] = pa_version[:sha]
