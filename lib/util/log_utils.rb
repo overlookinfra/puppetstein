@@ -8,6 +8,10 @@ module Puppetstein
       puts "============================================"
     end
 
+    def log_error(message)
+      puts "ERROR: #{msg}"
+    end
+
     def print_report(report)
       puts "\n\n"
       puts "====================================="

@@ -53,15 +53,13 @@ command = Cri::Command.define do
 
   run do |opts, args, cmd|
     if opts[:platform]
-      agent = Host.new(opts.fetch(:platform))
-      master = Host.new('redhat-7-x86_64')
+      agent = validate_platform(opts.fetch(:platform))
+      master = 'redhat7-64'
     else
-      agent = Host.new('ubuntu-1604-amd64')
-      master = Host.new('redhat-7-x86_64')
+      agent = 'ubuntu1604-amd64'
+      master = 'redhat7-64'
     end
 
-    agent.hostname = opts.fetch(:agent) if opts[:agent]  # Preprovisioned agent
-    master.hostname = opts.fetch(:master) if opts[:master]  # Preprovisioned master
     keyfile = opts[:keyfile] ? opts.fetch(:keyfile) : nil
     build_mode = opts.fetch(:build) if opts[:build]
     use_last = opts.fetch(:use_last) if opts[:use_last]
@@ -140,22 +138,6 @@ command = Cri::Command.define do
       if !opts[:noop]
         log = get_latest_host_config
         print_report({:agent => log[:HOSTS].keys[0], :master => log[:HOSTS].keys[1], :puppet_agent => "#{pa_version[:fork]}:#{pa_version[:sha]}"})
-      end
-      exit 0
-    end
-
-    ###
-    # hostname mode: if give an agent and master hostname, use those with given tests
-    ###
-    if agent.hostname && master.hostname
-      create_host_config([agent, master], config)
-      options = {'hosts' => config, 'flag' => 'no-provision'}
-      options['tests'] = test_location if tests
-      options['keyfile'] = keyfile if keyfile
-      options['noop'] = opts[:noop]
-      run_beaker(options)
-      if !opts[:noop]
-        print_report({:agent => agent.hostname, :master => master.hostname, :puppet_agent => "#{pa_version[:fork]}:#{pa_version[:sha]}"})
       end
       exit 0
     end
@@ -286,11 +268,11 @@ def change_component_ref(component_name, url, ref, tmp, noop=nil)
 end
 
 def build_puppet_agent(host, keyfile, tmp)
-  log_notice("building puppet-agent for #{host.family} #{host.version} #{host.arch}")
+  log_notice("building puppet-agent for #{HOST_MAP[host]}")
 
   ENV['VANAGON_SSH_KEY'] = keyfile if keyfile
   cmd = "pushd #{tmp}/puppet-agent && bundle install && bundle exec build puppet-agent" +
-        " #{host.vanagon_string} && popd"
+        " #{HOST_MAP[host]} && popd"
   execute(cmd)
   if $? != 0
     raise "Puppet Agent build failed, aborting."

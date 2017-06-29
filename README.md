@@ -21,10 +21,6 @@ Options:
 
   `--hiera=<fork:SHA>` Fork and SHA of the hiera repo to use in the custom puppet-agent. This option does not build a new package by default.
 
-  `--agent=<hostname>` Pre-provisioned VMpooler agent to use for testing. Requires --master.
-
-  `--master=<hostname>` Pre-provisioned VMpooler master to use for testing. Requires --agent.
-
   `--use_last` Option to reuse the same hosts from the last run.
 
   `--tests=<project:test>` Which project and tests to run against the specified or provisioned systems. Path to tests is relative to the top-level acceptance directory. Example: 'facter:tests/facts/el.rb'
@@ -72,17 +68,13 @@ be on GitHub.
 
 `puppetstein --use_last --tests=facter:tests/facts/another_test.rb --keyfile=~/.ssh/id_rsa-acceptance`
 
-**6) Run a test on a preprovisioned agent and master**
-
-`puppetstein --tests=facter:tests/facts/el.rb --agent=nasdqbwbubll --master=nanuduwnuih --keyfile=~/.ssh/id_rsa-acceptance`
-
-**7) Build a new puppet-agent package with modified puppet, facter and hiera code, and then install and test it**
+**6) Build a new puppet-agent package with modified puppet, facter and hiera code, and then install and test it**
 
 `puppetstein --puppet_agent=puppetlabs:master --platform=debian-8-x86_64 --puppet=whopper:branch1 --facter=branan:factbranch
 --hiera=Magisus:hibranch --tests=puppet:tests --build`
 
 To force puppetstein to build a new package, just specify `--build`
 
-**8) Install a pre-existing, local puppet-agent package on new VMpooler VMs and test them**
+**7) Install a pre-existing, local puppet-agent package on new VMpooler VMs and test them**
 
 `puppetstein --platform=debian-8-x86_64 --package=/tmp/puppet-agent.deb --tests=facter:tests/facts/el.rb`
