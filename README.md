@@ -9,7 +9,7 @@ Note: this currently requires its gems to be `bundle installed` globally, so tha
 Options:
   `--puppet_agent=<[fork:]SHA>`  The base version of puppet-agent to use. If `fork` is ommitted, `puppetlabs` is used, and builds.puppetlabs.lan will be checked for a corresponding SHA. If `fork` is specified, a new package will be built. Omit this option to use the latest puppet-agent. Conflicts with `--package`.
 
-  `--platform=<OS>` The VMpooler platform to use. Format: platform-version-arch, i.e 'centos-7-x86_64'
+  `--platform=<OS>` The OS to test and/or build against. These strings come from [beaker-hostgenerator](https://github.com/puppetlabs/beaker-hostgenerator).
 
   `--build` Option to force puppetstein to build a new puppet-agent package rather than retrieving a pre-existing one. This is set automatically if a fork and branch is specified for the `--puppet-agent` option, or if a Facter version is specified (since we need to rebuild all the C++ in this case).
 
