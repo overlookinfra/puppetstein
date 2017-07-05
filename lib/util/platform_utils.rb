@@ -18,14 +18,11 @@ module Puppetstein
 
     def save_puppet_agent_artifact(host, tmp)
       desc = `git --git-dir=#{tmp}/puppet-agent/.git describe`
-      case host.family
-        when 'el'
-        package = "puppet-agent-#{desc.gsub('-','.').chomp}-1.el#{host.version}.#{host.arch}.rpm"
-        path = "#{tmp}/puppet-agent/output/el/#{host.version}/PC1/#{host.arch}/#{package}"
-        when 'debian'
-        package = "puppet-agent_#{desc.gsub('-''.').chomp}-1#{host.flavor}_#{host.vanagon_arch}.deb"
-        path = "#{tmp}/puppet-agent/output/deb/#{host.flavor}/PC1/#{package}"
-      end
+      # This assumes there is only one package for a given SHA.
+      # If we ever support building more than one agent at a time,
+      # this will need to be updated.
+      path = Dir.glob("#{tmp}/puppet-agent/output/**/*#{desc}*")[0]
+      package = path[/puppet-agent-#{desc}.*/]
 
       execute("mv #{path} #{tmp}")
       "#{tmp}/#{package}"

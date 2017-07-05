@@ -14,7 +14,7 @@ module Puppetstein
     'centos6-64'          => 'el-6-x86_64',
     'centos7-64'          => 'el-7-x86_64',
     'cisconx-64'          => 'cisco-wrlinux-5-x86_64',
-    'cumulus25-64'        => 'cumulus-2.2.-amd64',
+    'cumulus25-64'        => 'cumulus-2.2-amd64',
     'debian7-32'          => 'debian-7-i386',
     'debian7-64'          => 'debian-7-amd64',
     'debian8-32'          => 'debian-8-i386',

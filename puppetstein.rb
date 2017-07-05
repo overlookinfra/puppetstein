@@ -56,7 +56,7 @@ command = Cri::Command.define do
       agent = validate_platform(opts.fetch(:platform))
       master = 'redhat7-64'
     else
-      agent = 'ubuntu1604-amd64'
+      agent = 'ubuntu1604-64'
       master = 'redhat7-64'
     end
 
@@ -81,11 +81,19 @@ command = Cri::Command.define do
     if opts[:puppet_agent]
       pa_version = parse_project_version(opts.fetch(:puppet_agent))
       # If a fork has been specified, trigger a rebuild
-      build_mode = true if pa_version[:fork]
+      if pa_version[:fork] != 'puppetlabs'
+        log_notice("Puppet Agent fork specified, triggering a rebuild.")
+        build_mode = true
+      end
     else
       pa_version = Hash.new
       pa_version[:fork] = 'puppetlabs'
-      pa_version[:sha] = opts[:build] ? 'master' : `curl http://builds.puppetlabs.lan/passing-agent-SHAs/puppet-agent-master`
+      if opts[:noop]
+        # don't curl the URL when in noop mode
+        pa_version[:sha] = 'latest'
+      else
+        pa_version[:sha] = opts[:build] ? 'master' : `curl http://builds.puppetlabs.lan/passing-agent-SHAs/puppet-agent-master`
+      end
     end
 
     ENV['PA_SHA'] = pa_version[:sha]
@@ -165,8 +173,10 @@ command = Cri::Command.define do
         end
       end
 
-      build_puppet_agent(agent, keyfile, tmp) if !opts[:noop]
-      package = save_puppet_agent_artifact(agent, tmp)
+      if !opts[:noop]
+        build_puppet_agent(agent, keyfile, tmp)
+        package = save_puppet_agent_artifact(agent, tmp)
+      end
 
       ENV['PACKAGE'] = package
       log_notice("Using newly built package #{package}")
@@ -264,8 +274,7 @@ def change_component_ref(component_name, url, ref, tmp, noop=nil)
   new_ref['url'] = url
   new_ref['ref'] = ref
   File.write("#{tmp}/puppet-agent/configs/components/#{component_name}.json", JSON.pretty_generate(new_ref)) if !noop
-  log_notice("updated #{tmp}/puppet-agent/configs/components/#{component_name}.json with url #{url} and ref #{ref}")
-end
+  log_notice("Updated #{tmp}/puppet-agent/configs/components/#{component_name}.json with url #{url} and ref #{ref}") end
 
 def build_puppet_agent(host, keyfile, tmp)
   log_notice("building puppet-agent for #{HOST_MAP[host]}")
