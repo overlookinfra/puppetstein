@@ -18,6 +18,7 @@ module Puppetstein
 
     def save_puppet_agent_artifact(host, tmp)
       desc = `git --git-dir=#{tmp}/puppet-agent/.git describe`
+      desc = desc.gsub('-', '.').chomp
       # This assumes there is only one package for a given SHA.
       # If we ever support building more than one agent at a time,
       # this will need to be updated.
