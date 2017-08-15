@@ -9,7 +9,7 @@ module Puppetstein
     end
 
     def log_error(message)
-      puts "ERROR: #{msg}"
+      puts "ERROR: #{message}"
     end
 
     def print_report(report)
